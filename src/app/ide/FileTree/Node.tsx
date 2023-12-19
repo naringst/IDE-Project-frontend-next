@@ -87,9 +87,18 @@ export const Node = ({
               type="text"
               defaultValue={node.data.name}
               onFocus={e => e.currentTarget.select()}
-              onBlur={() => node.reset()}
+              onBlur={e => {
+                if (isCorrectName(e.currentTarget.value) === true) {
+                  node.reset();
+                } else {
+                  tree.delete(node.id);
+                }
+              }}
               onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => {
-                if (e.key === 'Escape') node.reset();
+                if (e.key === 'Escape') {
+                  node.reset();
+                  tree.delete(node.id);
+                }
                 if (e.key === 'Enter') {
                   if (isCorrectName(e.currentTarget.value) === true) {
                     updateNodeName(node.id, e.currentTarget.value);
