@@ -7,7 +7,7 @@ import { FileDiv, NodeContainer } from './FileTree.styles';
 import React from 'react';
 import axiosInstance from '@/app/api/axiosInstance';
 import useCurrentOpenFile from '@/store/useCurrentOpenFile';
-import { findNowFilePath } from '@/utils/fileTreeUtils';
+import { findNowFilePath, isCorrectName } from '@/utils/fileTreeUtils';
 import { useFileTreeStore } from '@/store/useFileTreeStore';
 import { FileNodeType } from '@/types/IDE/FileTree/FileDataTypes';
 
@@ -91,8 +91,12 @@ export const Node = ({
               onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => {
                 if (e.key === 'Escape') node.reset();
                 if (e.key === 'Enter') {
-                  updateNodeName(node.id, e.currentTarget.value);
-                  node.submit(e.currentTarget.value); //이때 서버로도 메시지 보내야 함
+                  if (isCorrectName(e.currentTarget.value) === true) {
+                    updateNodeName(node.id, e.currentTarget.value);
+                    node.submit(e.currentTarget.value); //이때 서버로도 메시지 보내야 함
+                  } else {
+                    tree.delete(node.id);
+                  }
                 }
               }}
               autoFocus
